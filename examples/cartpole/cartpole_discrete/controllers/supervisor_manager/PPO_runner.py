@@ -18,7 +18,7 @@ def run():
     agent = PPOAgent(supervisor_pre.observation_space, supervisor_pre.action_space)
 
     episode_count = 0
-    episod_limit = 2000
+    episod_limit = 20000
     solved = False  # Whether the solved requirement is met
     average_episode_action_probs = []  # Save average episode taken actions probability to plot later
 

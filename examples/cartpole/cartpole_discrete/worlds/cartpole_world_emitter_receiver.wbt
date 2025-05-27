@@ -1,9 +1,9 @@
-#VRML_SIM R2022b utf8
-
+#VRML_SIM R2023b utf8
 
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2022b/projects/objects/backgrounds/protos/TexturedBackground.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2022b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2022b/projects/objects/floors/protos/RectangleArena.proto"
+
 WorldInfo {
 }
 Viewpoint {
@@ -21,12 +21,12 @@ DEF SUPERVISOR Robot {
     DEF RECEIVER Receiver {
       rotation -0.5773502691896258 -0.5773502691896258 -0.5773502691896258 2.0943951023931953
     }
-DEF EMITTER Emitter {
+    DEF EMITTER Emitter {
       rotation -0.5773502691896258 -0.5773502691896258 -0.5773502691896258 2.0943951023931953
     }
   ]
   name "supervisor"
-  controller "supervisor_manager"
+  controller "<extern>"
   supervisor TRUE
 }
 DEF ROBOT Robot {
@@ -35,9 +35,9 @@ DEF ROBOT Robot {
   children [
     DEF EMITTER Emitter {
     }
-DEF RECEIVER Receiver {
+    DEF RECEIVER Receiver {
     }
-DEF HINGE_COVER Solid {
+    DEF HINGE_COVER Solid {
       translation 0 0.03 -3.469446951953614e-18
       rotation 0 1 0 -1.5707953071795862
       children [
@@ -52,7 +52,7 @@ DEF HINGE_COVER Solid {
       ]
       name "hingeCover"
     }
-DEF BODY Shape {
+    DEF BODY Shape {
       appearance PBRAppearance {
         baseColor 0.917647 0.145098 0.145098
         roughness 1
@@ -62,7 +62,7 @@ DEF BODY Shape {
         size 0.2 0.05 0.08
       }
     }
-DEF WHEEL1 HingeJoint {
+    DEF WHEEL1 HingeJoint {
       jointParameters HingeJointParameters {
         position 6.723540149111039e-17
         axis 0 0 1
@@ -74,8 +74,8 @@ DEF WHEEL1 HingeJoint {
         }
       ]
       endPoint Solid {
-        translation 0.060001004644818584 1.339276918416963e-05 0.050000010543824816
-        rotation 1.7671082538995992e-08 -1.7671248834016876e-08 0.9999999999999998 1.5708000430119498
+        translation 0.060001004644818584 1.3392769184065918e-05 0.050000010543824816
+        rotation 1.7671082538641204e-08 -1.7671248833662e-08 0.9999999999999998 1.5708000430129525
         children [
           DEF WHEEL Shape {
             appearance PBRAppearance {
@@ -95,7 +95,7 @@ DEF WHEEL1 HingeJoint {
         }
       }
     }
-DEF WHEEL2 HingeJoint {
+    DEF WHEEL2 HingeJoint {
       jointParameters HingeJointParameters {
         position 6.670640318240083e-17
         axis 0 0 1
@@ -107,8 +107,8 @@ DEF WHEEL2 HingeJoint {
         }
       ]
       endPoint Solid {
-        translation -0.060001095993954395 7.61633872325172e-07 0.05000000952472374
-        rotation 1.76096540431902e-08 -1.7609826183889808e-08 0.9999999999999997 1.5707999569897093
+        translation -0.060001095993954395 7.616338725929531e-07 0.05000000952472374
+        rotation 1.7609654043031562e-08 -1.7609826183731013e-08 0.9999999999999997 1.5707999569896842
         children [
           USE WHEEL
         ]
@@ -118,7 +118,7 @@ DEF WHEEL2 HingeJoint {
         }
       }
     }
-DEF WHEEL3 HingeJoint {
+    DEF WHEEL3 HingeJoint {
       jointParameters HingeJointParameters {
         position 1.0324509589061627e-16
         axis 0 0 1
@@ -130,8 +130,8 @@ DEF WHEEL3 HingeJoint {
         }
       ]
       endPoint Solid {
-        translation 0.06000100379909951 1.3392659934531687e-05 -0.05000000738328558
-        rotation -1.7671380018270767e-08 1.7671539284228046e-08 0.9999999999999998 1.5708000430119113
+        translation 0.06000100379909951 1.3392659934258095e-05 -0.05000000738328558
+        rotation -1.7671380017814167e-08 1.7671539283771323e-08 0.9999999999999998 1.570800043013115
         children [
           USE WHEEL
         ]
@@ -141,7 +141,7 @@ DEF WHEEL3 HingeJoint {
         }
       }
     }
-DEF WHEEL4 HingeJoint {
+    DEF WHEEL4 HingeJoint {
       jointParameters HingeJointParameters {
         position -2.6895122773572173e-17
         axis 0 0 1
@@ -153,8 +153,8 @@ DEF WHEEL4 HingeJoint {
         }
       ]
       endPoint Solid {
-        translation -0.060001096839924606 7.615246225854488e-07 -0.05000000839401549
-        rotation -1.761000837263908e-08 1.761018020913388e-08 0.9999999999999997 1.5707999569897055
+        translation -0.060001096839924606 7.615246225649443e-07 -0.05000000839401549
+        rotation -1.7610008372456463e-08 1.7610180208951366e-08 0.9999999999999997 1.5707999569896172
         children [
           USE WHEEL
         ]
@@ -164,7 +164,7 @@ DEF WHEEL4 HingeJoint {
         }
       }
     }
-DEF POLE HingeJoint {
+    DEF POLE HingeJoint {
       jointParameters HingeJointParameters {
         position -4.812689688184746e-16
         axis 0 0 1
@@ -178,8 +178,8 @@ DEF POLE HingeJoint {
         }
       ]
       endPoint Solid {
-        translation -0.00046553268549812094 0.5300037594690288 -5.369584240411801e-07
-        rotation -0.5769874410964101 -0.5775313877690049 0.5775318077462261 2.0949379676602047
+        translation -0.00046553268361034406 0.5300037594685592 -5.369584240408067e-07
+        rotation -0.5769874410974982 -0.5775313877684596 0.5775318077456846 2.094937967659435
         children [
           DEF POLE_ENDPOINT Solid {
             translation 0.5000000000000002 0 0
@@ -205,7 +205,7 @@ DEF POLE HingeJoint {
               mass 0.02
             }
           }
-DEF POLE Shape {
+          DEF POLE Shape {
             appearance PBRAppearance {
               baseColor 1 0.1568627450980392 0.1568627450980392
               roughness 1

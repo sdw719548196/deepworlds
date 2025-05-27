@@ -57,7 +57,7 @@ class CartPoleSupervisor(CSVSupervisorEnv):
         self.pole_endpoint = self.getFromDef("POLE_ENDPOINT")
         self.message_received = None  # Variable to save the messages received from the robot
 
-        self.steps_per_episode = 200  # How many steps to run each episode (changing this messes up the solved condition)
+        self.steps_per_episode = 2000  # How many steps to run each episode (changing this messes up the solved condition)
         self.episode_score = 0  # Score accumulated during an episode
         self.episode_score_list = []  # A list to save all the episode scores, used to check if task is solved
         self.test = False  # Whether the agent is in test mode
@@ -158,6 +158,6 @@ class CartPoleSupervisor(CSVSupervisorEnv):
         :rtype: bool
         """
         if len(self.episode_score_list) > 100:  # Over 100 trials thus far
-            if np.mean(self.episode_score_list[-100:]) > 195.0:  # Last 100 episode scores average value
+            if np.mean(self.episode_score_list[-100:]) > 1950.0:  # Last 100 episode scores average value
                 return True
         return False

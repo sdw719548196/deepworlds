@@ -16,7 +16,13 @@ def run():
     #check_env(env)
     
     #  Use the PPO algorithm from the stable baselines having MLP, verbose=1  output the training information
-    model = PPO("MlpPolicy", env, verbose=1, device= "cpu")
+    model = PPO(
+        "MlpPolicy",
+        env,
+        verbose=1,
+        device="cpu",
+        tensorboard_log="./ppo_cartpole_tensorboard/"
+    )
     # Indicate the total timmepstes that the agent should be trained.
     model.learn(total_timesteps=40000)
     # Save the model

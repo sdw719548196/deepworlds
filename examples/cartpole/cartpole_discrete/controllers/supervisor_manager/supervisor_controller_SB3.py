@@ -1,7 +1,3 @@
-import sys
-sys.path.append('D:/EDU/Webots/lib/controller/python')
-
-
 from deepbots.supervisor import CSVSupervisorEnv
 from utilities import normalize_to_range
 
@@ -11,6 +7,9 @@ import numpy as np
 
 class CartPoleSupervisor(CSVSupervisorEnv):
     def __init__(self):
+
+        super().__init__()
+
        # Set up gym spaces
         self.observation_space = Box(low=np.array([-0.4, -np.inf, -1.3, -np.inf]),
                                      high=np.array([0.4, np.inf, 1.3, np.inf]),
@@ -18,7 +17,6 @@ class CartPoleSupervisor(CSVSupervisorEnv):
         self.action_space = Discrete(2)
 
         # Set up various robot components
-        self.robot = self.getSelf()  # Grab the robot reference from the supervisor to access various robot methods
         self.robot = self.getFromDef("ROBOT")
 
         self.pole_endpoint = self.getFromDef("POLE_ENDPOINT")
@@ -31,33 +29,34 @@ class CartPoleSupervisor(CSVSupervisorEnv):
         self.episode_score = 0  # Score accumulated during an episode
         self.episode_score_list = []  # A list to save all the episode scores, used to check if task is solved
         self.test = False  # Whether the agent is in test mode
+        self.current_step = 0
 
-        def get_observations(self):
-            """
-            This get_observation implementation builds the required observation for the CartPole problem.
-            All values apart are gathered here from the robot and pole_endpoint objects.
-            All values are normalized appropriately to [-1, 1], according to their original ranges.
+    def get_observations(self):
+        """
+        This get_observation implementation builds the required observation for the CartPole problem.
+        All values apart are gathered here from the robot and pole_endpoint objects.
+        All values are normalized appropriately to [-1, 1], according to their original ranges.
 
-            :return: Observation: [cart_position, cart_velocity, pole_angle, poleTipVelocity]
-            :rtype: list
-            """
-            # Position on x axis
-            cart_position = normalize_to_range(self.robot.getPosition()[0], -0.4, 0.4, -1.0, 1.0)
-            # Linear velocity on x axis
-            cart_velocity = normalize_to_range(self.robot.getVelocity()[0], -0.2, 0.2, -1.0, 1.0, clip=True)
+        :return: Observation: [cart_position, cart_velocity, pole_angle, poleTipVelocity]
+        :rtype: list
+        """
+        # Position on x axis
+        cart_position = normalize_to_range(self.robot.getPosition()[0], -0.4, 0.4, -1.0, 1.0)
+        # Linear velocity on x axis
+        cart_velocity = normalize_to_range(self.robot.getVelocity()[0], -0.2, 0.2, -1.0, 1.0, clip=True)
 
-            self.message_received = self.handle_receiver()  # update message received from robot, which contains pole angle
-            if self.message_received is not None:
-                pole_angle = normalize_to_range(float(self.message_received[0]), -0.23, 0.23, -1.0, 1.0, clip=True)
-            else:
-                # method is called before message_received is initialized
-                pole_angle = 0.0
+        self.message_received = self.handle_receiver()  # update message received from robot, which contains pole angle
+        if self.message_received is not None:
+            pole_angle = normalize_to_range(float(self.message_received[0]), -0.23, 0.23, -1.0, 1.0, clip=True)
+        else:
+            # method is called before message_received is initialized
+            pole_angle = 0.0
 
-            # Angular velocity y of endpoint
-            endpoint_velocity = normalize_to_range(self.pole_endpoint.getVelocity()[4], -1.5, 1.5, -1.0, 1.0, clip=True)
+        # Angular velocity y of endpoint
+        endpoint_velocity = normalize_to_range(self.pole_endpoint.getVelocity()[4], -1.5, 1.5, -1.0, 1.0, clip=True)
 
-            return [cart_position, cart_velocity, pole_angle, endpoint_velocity]
-        
+        return [cart_position, cart_velocity, pole_angle, endpoint_velocity]
+    
     def get_default_observation(self):
         """
         Simple implementation returning the default observation which is a zero vector in the shape
@@ -65,7 +64,7 @@ class CartPoleSupervisor(CSVSupervisorEnv):
         :return: Starting observation zero vector
         :rtype: list
         """
-        return [0.0 for _ in range(self.observation_space)]
+        return np.zeros(self.observation_space.shape, dtype=np.float32)
     
     def get_reward(self,action):
         return 1
@@ -106,3 +105,28 @@ class CartPoleSupervisor(CSVSupervisorEnv):
             if np.mean(self.episode_score_list[-100:]) > 1950.0:  # Last 100 episode scores average value
                 return True
         return False
+    
+    def get_info(self):
+        return {}
+
+    def render(self, mode="human"):
+        pass
+
+    # (OPTIONAL) If you want Gymnasium-style step
+    def step(self, action):
+        obs, reward, done, info = super().step(action)
+        self.current_step += 1
+        terminated = done
+        truncated = (self.current_step >= self.steps_per_episode)
+        return obs, reward, terminated, truncated, info
+
+    def reset(self, seed=None, options=None):
+        if seed is not None:
+            np.random.seed(seed)
+            import random
+            random.seed(seed)
+        super().reset()
+        obs = self.get_observations()
+        info = {}
+        self.current_step = 0
+        return obs, info

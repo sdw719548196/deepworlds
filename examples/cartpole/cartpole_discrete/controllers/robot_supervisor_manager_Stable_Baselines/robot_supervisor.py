@@ -4,8 +4,6 @@ from utilities import normalize_to_range
 from gymnasium.spaces import Box, Discrete
 import numpy as np
 
-import sys
-sys.path.append('D:/EDU/Webots/lib/controller/python')
 
 class CartPoleRobotSupervisor(RobotSupervisorEnv):
     """
@@ -50,6 +48,21 @@ class CartPoleRobotSupervisor(RobotSupervisorEnv):
         Episode length is greater than 200
         Solved Requirements (average episode score in last 100 episodes > 195.0)
     """
+
+
+    def step(self, action):
+        # Call the parent step to do the original DeepBots logic
+        obs, reward, done, info = super().step(action)
+        self.current_step += 1
+
+        # Gymnasium API expects 5 return values:
+        terminated = done      # True if task is finished (success/failure)
+        truncated = self.current_step >= self.steps_per_episode
+        # If you have an episode step limit:
+        # truncated = (self.current_step >= self.steps_per_episode)
+
+        return obs, reward, terminated, truncated, info
+
 
     def __init__(self):
         """
@@ -189,6 +202,19 @@ class CartPoleRobotSupervisor(RobotSupervisorEnv):
         for i in range(len(self.wheels)):
             self.wheels[i].setPosition(float('inf'))
             self.wheels[i].setVelocity(0.0)
+
+    def reset(self, seed=None, options=None):
+        # Handle seeding here (if needed)
+        if seed is not None:
+            np.random.seed(seed)
+            import random
+            random.seed(seed)
+        # Call the parent reset with NO arguments (unless you’ve updated parent code)
+        super().reset()
+        obs = self.get_observations()
+        info = {}
+        self.current_step = 0
+        return obs, info
 
     def get_info(self):
         """

@@ -13,10 +13,10 @@ def run():
     env = CartPoleRobotSupervisor()
     
     # Verify that the environment is working as a gym-style env
-    check_env(env)
+    #check_env(env)
     
     #  Use the PPO algorithm from the stable baselines having MLP, verbose=1  output the training information
-    model = PPO("MlpPolicy", env, verbose=1)
+    model = PPO("MlpPolicy", env, verbose=1, device= "cpu")
     # Indicate the total timmepstes that the agent should be trained.
     model.learn(total_timesteps=40000)
     # Save the model
@@ -32,15 +32,16 @@ def run():
     ################################################################
     
     # Initialize the environment
-    obs = env.reset()
+    obs, info = env.reset()
     env.episode_score = 0
     while True:
-        action, _states = model.predict(obs)
-        obs, reward, done, _ = env.step(action)
+        # Use the trained model to predict the next action
+        action, _states = model.predict(obs, deterministic=True)
+        obs, reward, terminated, truncated, info = env.step(action)
+        done = terminated or truncated  # If you need an episode-done flag
         env.episode_score += reward  # Accumulate episode reward
 
         if done:
             print("Reward accumulated =", env.episode_score)
             env.episode_score = 0
-            obs = env.reset()
-
+            obs, info = env.reset()

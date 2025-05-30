@@ -4,7 +4,6 @@ from utilities import normalize_to_range
 from gymnasium.spaces import Box, Discrete
 import numpy as np
 
-
 class CartPoleSupervisor(CSVSupervisorEnv):
     def __init__(self):
 
@@ -14,7 +13,7 @@ class CartPoleSupervisor(CSVSupervisorEnv):
         self.observation_space = Box(low=np.array([-0.4, -np.inf, -1.3, -np.inf]),
                                      high=np.array([0.4, np.inf, 1.3, np.inf]),
                                      dtype=np.float64)
-        self.action_space = Discrete(2)
+        self.action_space = Box(low=np.array([-1.0]), high=np.array([1.0]), dtype=np.float32)
 
         # Set up various robot components
         self.robot = self.getFromDef("ROBOT")
@@ -68,7 +67,7 @@ class CartPoleSupervisor(CSVSupervisorEnv):
     
     def get_reward(self,action):
         return 1
-    
+
     def is_done(self):
         """
         An episode is done if the score is over 195.0, or if the pole is off balance, or the cart position is on the
@@ -114,19 +113,20 @@ class CartPoleSupervisor(CSVSupervisorEnv):
 
     # (OPTIONAL) If you want Gymnasium-style step
     def step(self, action):
-        obs, reward, done, info = super().step([action])
+        obs, reward, done, info = super().step(action)
+        obs = np.array(obs, dtype=np.float32)  # ensure obs is np.array
         self.current_step += 1
         terminated = done
         truncated = (self.current_step >= self.steps_per_episode)
         return obs, reward, terminated, truncated, info
 
-    def reset(self, seed=None, options=None):
+    def reset(self, seed=None, options=None):            
         if seed is not None:
             np.random.seed(seed)
             import random
             random.seed(seed)
         super().reset()
-        obs = self.get_observations()
+        obs = np.array(self.get_observations(), dtype=np.float32)  # numpy array
         info = {}
         self.current_step = 0
-        return obs, info
+        return obs, info        

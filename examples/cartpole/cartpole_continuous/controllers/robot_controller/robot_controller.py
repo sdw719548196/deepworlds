@@ -14,12 +14,22 @@ class CartPoleRobot(CSVRobot):
         The constructor gets the Position Sensor reference and enables it and also initializes the wheels.
         """
         super().__init__()
-        self.position_sensor = self.getDevice("polePosSensor")
-        self.position_sensor.enable(self.timestep)
+        self.setup_sensors()
+        # Initialize the wheels, which are the motors of the robot
+        # The wheels are stored in a list for easier access and management.
+        # The wheels are set to infinite position control mode and zero velocity at the start.
+        
 
         self.wheels = [None for _ in range(4)]
         self.setup_motors()
 
+    def setup_sensors(self):
+        """
+        This method initializes the Position Sensor, which is used to measure the angle of the pole.
+        """
+        self.position_sensor = self.getDevice('polePosSensor')
+        self.position_sensor.enable(self.timestep)
+        
     def setup_motors(self):
         """
         This method initializes the four wheels, storing the references inside a list and setting the starting
